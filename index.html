@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebUploader Demo</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/magnific-popup.js/1.1.0/magnific-popup.min.css">
+    <link rel="stylesheet" href="webuploader/dist/webuploader.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">WebUploader Demo</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card card-block">
+            <h4 class="card-title">单张图片</h4>
+            <div id="webuploader_wrap">
+                <input type="hidden" id="file_val" name="file_val" value="">
+                <ul class="webuploader-list filelist" id="webuploader_wrap_list"></ul>
+                <div id="webuploader_wrap_file_picker">选择图片</div>
+            </div>
+        </div>
+
+        <div class="card card-block">
+            <h4 class="card-title">多张图片</h4>
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+    <script type="text/javascript" src="http://cdn.bootcss.com/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="webuploader/dist/webuploader.min.js"></script>
+    <script type="text/javascript" src="js/uploader.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        // 单张上传
+        uploadPic($('#webuploader_wrap'), $('#file_val'),'N');
+        // 多张上传
+        //uploadPic($('#webuploader_trademark_wrap'), $('#trademark_file_val'), 'trademark','N');
+    });
+    </script>
+</body>
+
+</html>

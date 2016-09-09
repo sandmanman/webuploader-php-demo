@@ -1,0 +1,174 @@
+.webuploader-list {
+    margin:0 0 1rem 0;
+    padding: 0;
+
+    list-style: none;
+}
+.webuploader-list .thumbnail {
+    position: relative;
+    padding: .25rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: .25rem;
+    -webkit-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    display: inline-block;
+    width: 110px;
+    height: 110px;
+}
+.webuploader-list .thumbnail img {
+    width: 100%;
+}
+.webuploader-list .thumbnail .upload-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    color: #fff;
+    text-align: center;
+}
+.webuploader-list .thumbnail .upload-progress .spin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -15px;
+    margin-left: -15px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 30px;
+
+    -webkit-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.webuploader-list .thumbnail .error {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    height: 28px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 28px;
+    text-align: center;
+    background-color: #f04d6c;
+}
+
+.webuploader-list .thumbnail .success {
+    display: block;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 24px;
+    height: 24px;
+    z-index: 200;
+    color: #fff;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    background-color: #20aa40;
+    border-radius: 1000px;
+}
+.webuploader-list .thumbnail .overlay-link {
+    position: absolute;
+    right: 40px;
+    bottom: 5px;
+    width: 24px;
+    height: 24px;
+    z-index: 200;
+    color: #fff;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80000000', endColorstr='#80000000')\0;
+    background-color: #4499ee;
+    border-radius: 1000px;
+}
+.webuploader-list .thumbnail .overlay-link:hover {
+    opacity: .9;
+}
+
+.webuploader-list .thumbnail .title {
+    display: none;
+}
+
+.webuploader-list .thumbnail .file-panel {
+    position: absolute;
+    height: 0;
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80000000', endColorstr='#80000000')\0;
+    background: rgba( 0, 0, 0, 0.5 );
+    width: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 300;
+}
+.webuploader-list .thumbnail .file-panel span {
+    width: 30px;
+    height: 30px;
+    display: inline;
+    float: right;
+    overflow: hidden;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+}
+.webuploader-list .thumbnail .imgWrap {
+    text-align: center;
+}
+.webuploader-container {
+    position: relative;
+}
+.webuploader-element-invisible {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px,1px,1px,1px);
+}
+.webuploader-pick {
+    position: relative;
+    display: inline-block;
+    padding: 4px 10px;
+    overflow: hidden;
+    cursor: pointer;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    background-color: #4499ee;
+}
+.webuploader-pick-hover {
+    background-color: darken($blue-color, 5%);
+}
+.webuploader-pick-disable {
+    opacity: 0.6;
+    pointer-events:none;
+}
