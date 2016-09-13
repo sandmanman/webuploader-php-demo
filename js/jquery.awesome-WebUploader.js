@@ -60,10 +60,11 @@ if (typeof WebUploader === 'undefined') {
             console.log('默认设置：');
             console.log(this.settings);
 
-            //$(this.element).addClass('TEST');
+            this.yourOtherFunction( "jQuery Boilerplate" );
         },
-        yourOtherFunction: function() {
-
+        yourOtherFunction: function(text) {
+            $( this.element ).addClass( text );
+            console.log($( this.element ).attr('class'));
         }
     });
 
@@ -71,9 +72,9 @@ if (typeof WebUploader === 'undefined') {
     // 防止产生多个实例
     $.fn[pluginName] = function(options) {
         this.each(function() {
-            if (!$.data(this, 'plugin_' + pluginName)) {
-                $.data(this, 'plugin_' + pluginName, new Plugin(this, options));
-            }
+            if ( !$.data( this, "plugin_" + pluginName ) ) {
+                $.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
+			}
         });
 
         // 方便链式调用
