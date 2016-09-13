@@ -39,13 +39,15 @@
     <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
     <script type="text/javascript" src="http://cdn.bootcss.com/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
     <script type="text/javascript" src="webuploader/dist/webuploader.min.js"></script>
+    <script type="text/javascript" src="js/jquery.awesome-WebUploader.js"></script>
     <script type="text/javascript" src="js/uploader.js"></script>
     <script type="text/javascript">
     $(function(){
         // 单张上传
-        uploadPic($('#webuploader_wrap'), $('#file_val'),'N');
+        //uploadPic($('#webuploader_wrap'), $('#file_val'),'N');
         // 多张上传
         //uploadPic($('#webuploader_trademark_wrap'), $('#trademark_file_val'), 'trademark','N');
+        $('#webuploader_wrap').awesomeWebUploader();
     });
     </script>
 </body>

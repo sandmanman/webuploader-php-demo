@@ -30,9 +30,9 @@ function uploadPic($wrap, $residHidden, isMulti) {
     */
     var addFile = function(file, queue) {
         var $li = $('<div class="thumbnail" id="' + file.id + '">' +
-                '<p class="title">' + file.name + '</p>' +
+                '<div class="title">' + file.name + '</div>' +
                 '<div class="imgWrap"></div>' +
-                '<p class="upload-progress"><span class="spin ion-load-c"></span></p>' +
+                '<div class="upload-progress"><span class="spin ion-load-c"></span></div>' +
                 '</div>'),
             $btns = $('<div class="file-panel">' + '<span class="cancel" title="删除"><i class="ion-close-circled"></i></span>').appendTo($li),
             $prgress = $li.find('.upload-progress'),
@@ -277,4 +277,5 @@ function uploadPic($wrap, $residHidden, isMulti) {
     uploader.on('uploadComplete', function(file) {
         $('#' + file.id).find('.upload-progress').remove();
     });
+
 }
