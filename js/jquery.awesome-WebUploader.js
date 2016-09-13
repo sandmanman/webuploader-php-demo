@@ -3,6 +3,12 @@
  * 该插件是基于Baidu WebUploader 实例的封装，必须引用WebUploader的相关资源
  * 2016.09.13 15:01
  * sandmanman.csser#foxmail.com
+ * ========================================================================
+ * 基础DOM
+ * <div id="webuploader-wrap">
+ *   <div class="webuploader-list" id="webuploader-wrap-list"></div>
+ *   <div id="webuploader-wrap-file-picker">选择文件</div>
+ * </div>
  */
 
 if (typeof jQuery === 'undefined') {
