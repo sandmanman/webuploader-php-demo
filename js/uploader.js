@@ -29,11 +29,11 @@ function uploadPic($wrap, $residHidden, isMulti) {
       @param file
     */
     var addFile = function(file, queue) {
-        var $li = $('<li class="thumbnail" id="' + file.id + '">' +
+        var $li = $('<div class="thumbnail" id="' + file.id + '">' +
                 '<p class="title">' + file.name + '</p>' +
                 '<div class="imgWrap"></div>' +
                 '<p class="upload-progress"><span class="spin ion-load-c"></span></p>' +
-                '</li>'),
+                '</div>'),
             $btns = $('<div class="file-panel">' + '<span class="cancel" title="删除"><i class="ion-close-circled"></i></span>').appendTo($li),
             $prgress = $li.find('.upload-progress'),
             $imgWrap = $li.find('.imgWrap'),
