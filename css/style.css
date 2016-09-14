@@ -154,21 +154,3 @@
     clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
     clip: rect(1px,1px,1px,1px);
 }
-.webuploader-pick {
-    position: relative;
-    display: inline-block;
-    padding: 4px 10px;
-    overflow: hidden;
-    cursor: pointer;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
-    background-color: #4499ee;
-}
-.webuploader-pick-hover {
-    background-color: darken($blue-color, 5%);
-}
-.webuploader-pick-disable {
-    opacity: 0.6;
-    pointer-events:none;
-}
