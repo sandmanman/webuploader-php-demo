@@ -44,10 +44,10 @@ if (typeof WebUploader === 'undefined') {
             }
         };
 
-    var uploader;
 
-    // 所有文件的进度信息，key为file id
-    var percentages = {};
+    var state = 'pedding', // 可能有pedding, ready, uploading, confirm, done.
+        percentages = {}, // 所有文件的进度信息，key为file id
+        uploader; // WebUploader实例
 
 
     if (!WebUploader.Uploader.support()) {
@@ -70,10 +70,10 @@ if (typeof WebUploader === 'undefined') {
             this.createWebUploader();
         },
 
-        /*
-          WebUploader实例
-         */
         createWebUploader: function() {
+            /*
+             * WebUploader实例化
+             */
             uploader = new WebUploader.Uploader({
                 pick: {
                     id: '#' + $('#' + this.settings.wrap).attr('id') + '-file-picker',
@@ -106,28 +106,82 @@ if (typeof WebUploader === 'undefined') {
             // 为上传按钮追加class，CSS基于bootstrap
             $(pickElement).find('.webuploader-pick').addClass(this.settings.buttonClass);
 
-            //文件加入上传队列后触发
+
+            /*
+             * 文件加入上传队列后触发
+             */
             uploader.onFileQueued = function(file) {
                 var wrapID = $(pickElement).parent().attr('id');
                 var $queue = $('#' + wrapID + '-list');
                 Plugin.prototype.addFile(file, $queue);
             };
+
+
+            /*
+             * 文件上传过程中创建进度条实时显示
+             */
+            uploader.on( 'uploadProgress', function( file, percentage ) {
+                var $li = $('#'+file.id),
+                $percent = $li.find('.progress-bar');
+
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active"><span></span></div></div>')
+                            .appendTo( $li )
+                            .find('.progress-bar');
+                }
+
+                $percent.css( 'width', percentage * 100 + '%' );
+                percentages[ file.id ][ 1 ] = percentage;
+            });
+
+
+            /*
+             * 当上传文件信息不满足要求时触发
+             */
+            uploader.onError = function(code) {
+                if (code == 'F_EXCEED_SIZE') {
+                    alert('添加文件大小超出限制');
+                } else if (code == 'Q_EXCEED_NUM_LIMIT') {
+                    alert('添加的文件数量超出限制');
+                } else if (code == 'Q_EXCEED_SIZE_LIMIT') {
+                    alert('添加的文件总大小超出限制');
+                } else if (code == 'Q_TYPE_DENIED') {
+                    alert('文件类型不满足要求');
+                } else if (code == 'F_DUPLICATE') {
+                    alert('不能选择相同文件');
+                } else {
+                    alert(code);
+                }
+            };
+
+
+            /*
+             * 完成上传完了，成功或者失败，先删除进度条
+             */
+            uploader.on( 'uploadComplete', function( file ) {
+                //$( '#'+file.id ).find('.progress').remove();
+                // setTimeout(function(){
+                //     $( '#'+file.id ).find('.success').fadeOut();
+                // },1500);
+                $( '#'+file.id ).append('<span class="success"><i class="fa fa-check"></i></span>');
+            });
         },
 
         /*
-          当有文件添加进来时执行，负责view的创建
+         * 当有文件添加进来时执行，负责view的创建
          */
         addFile: function(file, queue) {
             var $li = $('<div class="img-thumbnail" id="' + file.id + '">' +
                     '<div class="img-wrap"></div>' +
-                    '<div class="title">' + file.name + '</div>' +
-                    '<div class="progress progress-striped progress-animated"></div>' +
+                    '<p class="title">' + file.name + '</p>' +
+                    '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active"><span></span></div></div>' +
                     '</div>'),
                 $removeBtn = '<span class="cancel" title="删除"><i class="fa fa-close"></i></span>',
                 $btns = $('<div class="file-panel">' + $removeBtn + '</div>' ).appendTo($li),
-                $progress = $li.find('.progress'),
+                $prgress = $li.find('.progress-bar'),
                 $imgWrap = $li.find('.img-wrap'),
-                $info = $('<div class="error"></div>'),
+                $info = $('<p class="error"></p>'),
 
                 showError = function(code) {
                     switch (code) {
@@ -169,7 +223,10 @@ if (typeof WebUploader === 'undefined') {
 
             file.on('statuschange', function(cur, prev) {
                 if (prev === 'progress') {
-                    $progress.hide().width(0);
+                    $prgress.parent('.progress').hide();
+                    $prgress.width(0);
+                } else if ( prev === 'queued' ) {
+                    $btns.remove();
                 }
                 // 成功
                 if (cur === 'error' || cur === 'invalid') {
@@ -178,14 +235,16 @@ if (typeof WebUploader === 'undefined') {
                 } else if (cur === 'interrupt') {
                     showError('interrupt');
                 } else if (cur === 'queued') {
-                    $progress.css('display', 'block');
+                    $prgress.parent('.progress').css('display', 'block');
                 } else if (cur === 'progress') {
                     $info.remove();
-                    $progress.css('display', 'block');
+                    $prgress.parent('.progress').css('display', 'block');
                 } else if (cur === 'complete') {
-                    $progress.hide().width(0);
-                    $li.append('<span class="success"><i class="fa fa-check"></i></span>');
+                    $prgress.parent('.progress').hide();
+                    $prgress.width(0);
                 }
+
+                $li.removeClass( 'state-' + prev ).addClass( 'state-' + cur );
             });
 
             $li.appendTo(queue);
@@ -193,7 +252,7 @@ if (typeof WebUploader === 'undefined') {
         }, // addFile End
 
         /*
-          移除文件
+         * 移除文件
          */
         removeFile: function(file, queue) {
 
