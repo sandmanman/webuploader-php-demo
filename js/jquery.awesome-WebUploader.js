@@ -103,7 +103,7 @@ if (typeof WebUploader === 'undefined') {
 
             var pickElement = uploader.options.pick.id;
 
-            // 为上传按钮追加class，CSS基于bootstrap
+            // 为上传按钮追加class
             $(pickElement).find('.webuploader-pick').addClass(this.settings.buttonClass);
 
 
@@ -139,7 +139,8 @@ if (typeof WebUploader === 'undefined') {
             /*
              * 当上传文件信息不满足要求时触发
              */
-            uploader.onError = function(code) {
+            uploader.on( 'error', function(code) {
+                console.log(code)
                 if (code == 'F_EXCEED_SIZE') {
                     alert('添加文件大小超出限制');
                 } else if (code == 'Q_EXCEED_NUM_LIMIT') {
@@ -153,17 +154,45 @@ if (typeof WebUploader === 'undefined') {
                 } else {
                     alert(code);
                 }
-            };
+            });
 
 
             /*
-             * 完成上传完了，成功或者失败，先删除进度条
+             * 不管成功或者失败，文件上传完成时触发
              */
             uploader.on( 'uploadComplete', function( file ) {
-                //$( '#'+file.id ).find('.progress').remove();
+                //console.log(file.name);
+                $( '#'+file.id ).find('.progress').remove();
                 // setTimeout(function(){
                 //     $( '#'+file.id ).find('.success').fadeOut();
                 // },1500);
+                // $( '#'+file.id ).append('<span class="success"><i class="fa fa-check"></i></span>');
+            });
+
+            /*
+             * 当某个文件上传到服务端响应后，会派送此事件来询问服务端响应是否有效。
+             * 如果此事件handler返回值为false, 则此文件将派送server类型的uploadError事件
+             */
+            // uploader.on( 'uploadAccept', function( file, response ) {
+            //     console.log(response);
+            //     if ( !response.result == null ) {
+            //         // 通过return false来告诉组件，此文件上传有错。
+            //         return false;
+            //     }
+            // });
+
+            /*
+             * 当文件上传出错时触发
+             */
+            uploader.on( 'uploadError', function( file, reason ) {
+                console.log(reason);
+            });
+
+            /*
+             * 当文件上传成功时触发
+             */
+            uploader.on( 'uploadSuccess', function( file, response, reason ) {
+                console.log(response.fileName);
                 $( '#'+file.id ).append('<span class="success"><i class="fa fa-check"></i></span>');
             });
         },
@@ -172,6 +201,8 @@ if (typeof WebUploader === 'undefined') {
          * 当有文件添加进来时执行，负责view的创建
          */
         addFile: function(file, queue) {
+            var text = '';
+
             var $li = $('<div class="img-thumbnail" id="' + file.id + '">' +
                     '<div class="img-wrap"></div>' +
                     '<p class="title">' + file.name + '</p>' +
@@ -181,7 +212,7 @@ if (typeof WebUploader === 'undefined') {
                 $btns = $('<div class="file-panel">' + $removeBtn + '</div>' ).appendTo($li),
                 $prgress = $li.find('.progress-bar'),
                 $imgWrap = $li.find('.img-wrap'),
-                $info = $('<p class="error"></p>'),
+                $info = $('<div class="error"></div>'),
 
                 showError = function(code) {
                     switch (code) {
@@ -211,7 +242,7 @@ if (typeof WebUploader === 'undefined') {
                 // @todo lazyload
                 uploader.makeThumb(file, function(error, src) {
                     if (error) {
-                        $wrap.text('不能预览');
+                        $imgWrap.text('不能预览');
                         return;
                     }
                     var img = $('<img src="' + src + '">');

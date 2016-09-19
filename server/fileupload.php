@@ -1,6 +1,6 @@
 <?php
 /**
- * upload.php
+ * fileupload.php
  *
  * Copyright 2013, Moxiecode Systems AB
  * Released under GPL License.
@@ -8,16 +8,6 @@
  * License: http://www.plupload.com/license
  * Contributing: http://www.plupload.com/contributing
  */
-
-#!! 注意
-#!! 此文件只是个示例，不要用于真正的产品之中。
-#!! 不保证代码安全性。
-
-#!! IMPORTANT:
-#!! this file is just an example, it doesn't incorporate any security checks and
-#!! is not recommended to be used in production environment as it is. Be sure to
-#!! revise it and customize to your needs.
-
 
 // Make sure file is not cached (as it happens for example on iOS devices)
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -35,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 
-if ( !empty($_REQUEST[ 'debug' ]) ) {
-    $random = rand(0, intval($_REQUEST[ 'debug' ]) );
-    if ( $random === 0 ) {
+if (!empty($_REQUEST['debug'])) {
+    $random = rand(0, intval($_REQUEST['debug']));
+    if ($random === 0) {
         header("HTTP/1.0 500 Internal Server Error");
         exit;
     }
@@ -55,8 +45,8 @@ if ( !empty($_REQUEST[ 'debug' ]) ) {
 
 // Settings
 // $targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-$targetDir = 'upload_tmp';
-$uploadDir = 'upload';
+$targetDir = 'files_temp';
+$uploadDir = 'files';
 
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds
@@ -72,11 +62,25 @@ if (!file_exists($uploadDir)) {
     @mkdir($uploadDir);
 }
 
+//随机字符
+function randString($len = 6)
+{
+    $code = str_shuffle("1234567890ABCDEFGHIJKLMNPQRSTUVWXYZ");
+    //phpinfo();
+    $codeLen = strlen($code);
+    $return = '';
+    for ($i = 0; $i < $len; $i++) {
+        $return .= $code[mt_rand(0, $codeLen)];
+    }
+    return $return;
+}
+
+$randomCode = randString(6);
 // Get a file name
 if (isset($_REQUEST["name"])) {
-    $fileName = $_REQUEST["name"];
+    $fileName = $randomCode.'_'.$_REQUEST["name"];
 } elseif (!empty($_FILES)) {
-    $fileName = $_FILES["file"]["name"];
+    $fileName = $randomCode.'_'.$_FILES["file"]["name"];
 } else {
     $fileName = uniqid("file_");
 }
@@ -88,7 +92,7 @@ $uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 1;
 
-
+//echo var_dump($_FILES);
 // Remove old temp files
 if ($cleanupTargetDir) {
     if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
@@ -143,19 +147,19 @@ rename("{$filePath}_{$chunk}.parttmp", "{$filePath}_{$chunk}.part");
 
 $index = 0;
 $done = true;
-for( $index = 0; $index < $chunks; $index++ ) {
-    if ( !file_exists("{$filePath}_{$index}.part") ) {
+for ($index = 0; $index < $chunks; $index++) {
+    if (!file_exists("{$filePath}_{$index}.part")) {
         $done = false;
         break;
     }
 }
-if ( $done ) {
+if ($done) {
     if (!$out = @fopen($uploadPath, "wb")) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
     }
 
-    if ( flock($out, LOCK_EX) ) {
-        for( $index = 0; $index < $chunks; $index++ ) {
+    if (flock($out, LOCK_EX)) {
+        for ($index = 0; $index < $chunks; $index++) {
             if (!$in = @fopen("{$filePath}_{$index}.part", "rb")) {
                 break;
             }
@@ -172,6 +176,6 @@ if ( $done ) {
     }
     @fclose($out);
 }
-
 // Return Success JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+$result = array('fileName'=>$fileName,'Files'=>$_FILES);
+echo json_encode($result);

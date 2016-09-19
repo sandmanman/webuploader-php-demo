@@ -101,7 +101,6 @@
 }
 
 .webuploader-list {
-    margin: 0 0 1rem 0;
     padding: 0;
     list-style: none;
 }
@@ -109,6 +108,7 @@
 .webuploader-list .img-thumbnail {
     position: relative;
     padding: .25rem;
+    margin: 0 0.5rem 0.5rem 0;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: .25rem;
@@ -127,7 +127,11 @@
 .webuploader-list .img-thumbnail .progress {
     position: absolute;
     top: 50%;
+    left: 50%;
     margin-top: -5px;
+    margin-left: -40px;
+
+    width: 80px;
 }
 
 .webuploader-list .img-thumbnail .error {
@@ -188,12 +192,12 @@
 
 .webuploader-list .img-thumbnail .file-panel {
     position: absolute;
-    height: 0;
+
     filter: progid: DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#80000000', endColorstr='#80000000')\0;
     background: rgba( 0, 0, 0, 0.5);
     width: 100%;
     top: 0;
-    left: 0;
+    right: 0;
     overflow: hidden;
     z-index: 300;
 }
