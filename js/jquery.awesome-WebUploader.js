@@ -92,7 +92,7 @@ if (typeof WebUploader === 'undefined') {
                 accept: {
                     title: 'Images', // 文字描述
                     extensions: this.settings.fileType, // 允许的文件后缀，不带点，多个用逗号分割
-                    mimeTypes: 'image/gif, image/jpg, image/jpeg, image/bmp. image/png'
+                    mimeTypes: 'image/gif, image/jpg, image/jpeg, image/bmp, image/png'
                 },
                 thumb: {
                     type: ''
