@@ -166,31 +166,13 @@
     border-radius: 1000px;
 }
 
-.webuploader-list .img-thumbnail .overlay-link {
-    position: absolute;
-    right: 40px;
-    bottom: 5px;
-    width: 24px;
-    height: 24px;
-    z-index: 200;
-    color: #fff;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
-    filter: progid: DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#80000000', endColorstr='#80000000')\0;
-    background-color: #4499ee;
-    border-radius: 1000px;
-}
-
-.webuploader-list .img-thumbnail .overlay-link:hover {
-    opacity: .9;
-}
-
 .webuploader-list .img-thumbnail .title {
     display: none;
 }
 
-.webuploader-list .img-thumbnail .file-panel {
+.webuploader-list .img-thumbnail .file-tools {
+    display: none;
+
     position: absolute;
 
     filter: progid: DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#80000000', endColorstr='#80000000')\0;
@@ -202,7 +184,7 @@
     z-index: 300;
 }
 
-.webuploader-list .img-thumbnail .file-panel span {
+.webuploader-list .img-thumbnail .file-tools span {
     width: 30px;
     height: 30px;
     display: inline;
@@ -213,6 +195,9 @@
     font-size: 16px;
     line-height: 30px;
     text-align: center;
+}
+.webuploader-list .img-thumbnail:hover .file-tools {
+    display: block;
 }
 
 .webuploader-list .img-thumbnail .imgWrap {

@@ -11,15 +11,8 @@
  * </div>
  */
 
-if (typeof jQuery === 'undefined') {
-    throw new Error('必须引入jQuery！');
-}
-if (typeof WebUploader === 'undefined') {
-    throw new Error('必须引入WebUploader！');
-}
 
-;
-(function($, window, document, undefined) {
+;(function($, window, document, undefined) {
 
     'use strict';
 
@@ -50,10 +43,10 @@ if (typeof WebUploader === 'undefined') {
         uploader; // WebUploader实例
 
 
-    if (!WebUploader.Uploader.support()) {
-        alert('Web Uploader 不支持您的浏览器！如果你使用的是IE浏览器，请尝试升级 flash 播放器');
-        throw new Error('WebUploader does not support the browser you are using.');
-    }
+    // if (!WebUploader.Uploader.support()) {
+    //     alert('Web Uploader 不支持您的浏览器！如果你使用的是IE浏览器，请尝试升级 flash 播放器');
+    //     throw new Error('WebUploader does not support the browser you are using.');
+    // }
 
 
     function Plugin(element, options) {
@@ -87,7 +80,7 @@ if (typeof WebUploader === 'undefined') {
                 swf: this.settings.swf, // swf文件路径
                 server: this.settings.server, // 文件接收服务端
                 sendAsBinary: true, //后台以stream形式接收
-                auto: true, //选择文件后自动上传
+                auto: false, //选择文件后自动上传
                 duplicate: true, //可以上传相同的文件
                 accept: {
                     title: 'Images', // 文字描述
@@ -103,9 +96,12 @@ if (typeof WebUploader === 'undefined') {
 
             var pickElement = uploader.options.pick.id;
 
-            // 为上传按钮追加class
+            // 为按钮追加class
             $(pickElement).find('.webuploader-pick').addClass(this.settings.buttonClass);
 
+            // 上传按钮
+            var $uploadBtn = $('#'+this.settings.wrap+'-upload-btn');
+            $uploadBtn.addClass(this.settings.buttonClass);
 
             /*
              * 文件加入上传队列后触发
@@ -162,7 +158,7 @@ if (typeof WebUploader === 'undefined') {
              */
             uploader.on( 'uploadComplete', function( file ) {
                 //console.log(file.name);
-                $( '#'+file.id ).find('.progress').remove();
+                $( '#'+file.id ).find('.progress').hide();
                 // setTimeout(function(){
                 //     $( '#'+file.id ).find('.success').fadeOut();
                 // },1500);
@@ -170,28 +166,29 @@ if (typeof WebUploader === 'undefined') {
             });
 
             /*
-             * 当某个文件上传到服务端响应后，会派送此事件来询问服务端响应是否有效。
+             * 当某个文件上传到服务端响应后，会派送此事件来询问服务端响应是否有效
              * 如果此事件handler返回值为false, 则此文件将派送server类型的uploadError事件
              */
             // uploader.on( 'uploadAccept', function( file, response ) {
             //     console.log(response);
-            //     if ( !response.result == null ) {
-            //         // 通过return false来告诉组件，此文件上传有错。
-            //         return false;
-            //     }
+            //     // if ( !response.result == null ) {
+            //     //     // 通过return false来告诉组件，此文件上传有错。
+            //     //     return false;
+            //     // }
             // });
 
             /*
              * 当文件上传出错时触发
              */
             uploader.on( 'uploadError', function( file, reason ) {
-                console.log(reason);
+                console.error(reason);
             });
 
             /*
              * 当文件上传成功时触发
              */
-            uploader.on( 'uploadSuccess', function( file, response, reason ) {
+            uploader.on( 'uploadSuccess', function( file, response ) {
+                // response服务端返回的结果集
                 console.log(response.fileName);
                 $( '#'+file.id ).append('<span class="success"><i class="fa fa-check"></i></span>');
             });
@@ -204,12 +201,12 @@ if (typeof WebUploader === 'undefined') {
             var text = '';
 
             var $li = $('<div class="img-thumbnail" id="' + file.id + '">' +
-                    '<div class="img-wrap"></div>' +
-                    '<p class="title">' + file.name + '</p>' +
-                    '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active"><span></span></div></div>' +
-                    '</div>'),
+                      '<div class="img-wrap"></div>' +
+                      '<p class="title">' + file.name + '</p>' +
+                      '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active"><span></span></div></div>' +
+                      '</div>'),
                 $removeBtn = '<span class="cancel" title="删除"><i class="fa fa-close"></i></span>',
-                $btns = $('<div class="file-panel">' + $removeBtn + '</div>' ).appendTo($li),
+                $btns = $('<div class="file-tools">' + $removeBtn + '</div>' ).appendTo($li),
                 $prgress = $li.find('.progress-bar'),
                 $imgWrap = $li.find('.img-wrap'),
                 $info = $('<div class="error"></div>'),
@@ -238,8 +235,8 @@ if (typeof WebUploader === 'undefined') {
             if ( file.getStatus === 'invalid' ) {
                 showError(file.statusText);
             } else {
-                $imgWrap.text('正在上传..');
-                // @todo lazyload
+                $imgWrap.text('预览中..');
+
                 uploader.makeThumb(file, function(error, src) {
                     if (error) {
                         $imgWrap.text('不能预览');
@@ -266,7 +263,8 @@ if (typeof WebUploader === 'undefined') {
                 } else if (cur === 'interrupt') {
                     showError('interrupt');
                 } else if (cur === 'queued') {
-                    $prgress.parent('.progress').css('display', 'block');
+                    percentages[ file.id ][ 1 ] = 0;
+                    //$prgress.parent('.progress').css('display', 'block');
                 } else if (cur === 'progress') {
                     $info.remove();
                     $prgress.parent('.progress').css('display', 'block');
@@ -278,6 +276,18 @@ if (typeof WebUploader === 'undefined') {
                 $li.removeClass( 'state-' + prev ).addClass( 'state-' + cur );
             });
 
+
+            // 对图片操作
+            $btns.on('click', 'span', function(){
+                var index = $(this).index();
+
+                switch(index) {
+                    case 0:
+                    Plugin.prototype.removeFile(file);
+                    break;
+                }
+            });
+
             $li.appendTo(queue);
 
         }, // addFile End
@@ -286,7 +296,14 @@ if (typeof WebUploader === 'undefined') {
          * 移除文件
          */
         removeFile: function(file, queue) {
+            console.log(percentages);
 
+            var $li = $('#'+file.id);
+
+            delete percentages[ file.id ];
+            $li.find('.file-tools').remove();
+
+            console.log(file.id);
         } // removeFile End
 
 
